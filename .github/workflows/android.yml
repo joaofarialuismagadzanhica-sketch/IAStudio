@@ -15,10 +15,11 @@ jobs:
           cache: gradle
       - name: Make Gradlew Executable
         run: chmod +x gradlew
-      - name: Build APK
-        run: ./gradlew assembleDebug
-      - name: Upload APK
+      - name: Build APK and AAB
+        run: ./gradlew assembleRelease
+      - name: Upload APK and AAB
         uses: actions/upload-artifact@v4
         with:
           name: Giga-Wall-APK
           path: "**/*.apk"
+                "**/*.aab
