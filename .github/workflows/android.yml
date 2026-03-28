@@ -1,42 +1,24 @@
-name: Build and Sign Giga Wall
-
+name: Build Giga Wall APK
 on:
   push:
     branches: [ main, master ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Setup Java 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
-
-      - name: Grant permission
+      - name: Make Gradlew Executable
         run: chmod +x gradlew
-
-      - name: Decode Keystore
-        run: echo "${{ secrets.SIGNING_KEY }}" | base64 --decode > release.keystore
-
-      - name: Build Release
-        run: ./gradlew clean assembleRelease bundleRelease
-        env:
-          MYAPP_RELEASE_STORE_FILE: release.keystore
-          MYAPP_RELEASE_KEY_ALIAS: ${{ secrets.ALIAS }}
-          MYAPP_RELEASE_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
-          MYAPP_RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Upload APK & AAB
+      - name: Build APK
+        run: ./gradlew assembleDebug
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: Giga-Wall-Build
-          path: |
-            app/build/outputs/apk/release/*.apk
-            app/build/outputs/bundle/release/*.aab
+          name: Giga-Wall-APK
+          path: "**/*.apk"
