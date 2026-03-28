@@ -15,9 +15,9 @@ jobs:
           cache: gradle
       - name: Make Gradlew Executable
         run: chmod +x gradlew
-      - name: Build APK and AAB
+      - name: Build APK
         run: ./gradlew assembleRelease
-      - name: Upload APK and AAB
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Giga-Wall-APK
