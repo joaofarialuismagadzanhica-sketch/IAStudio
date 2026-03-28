@@ -1,4 +1,4 @@
-name: Build Giga Wall APK
+name: Build and Sign Giga Wall
 on:
   push:
     branches: [ main, master ]
@@ -13,12 +13,23 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           cache: gradle
-      - name: Make Gradlew Executable
-        run: chmod +x gradlew
-      - name: Build APK
-        run: ./gradlew assembleDebug
-      - name: Upload APK
+
+      - name: Decode Keystore
+        run: echo "${{ secrets.SIGNING_KEY }}" | base64 --decode > release.keystore
+
+      - name: Build & Sign Release
+        run: ./gradlew bundleRelease assembleRelease
+        env:
+          MYAPP_RELEASE_STORE_FILE: release.keystore
+          MYAPP_RELEASE_KEY_ALIAS: ${{ secrets.ALIAS }}
+          MYAPP_RELEASE_STORE_PASSWORD: ${{ secrets.KEY_STORE_PASSWORD }}
+          MYAPP_RELEASE_KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Upload Artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: Giga-Wall-APK
-          path: "**/*.apk"
+          name: Giga-Wall-Production-Files
+          path: |
+            **/build/outputs/apk/release/*.apk
+            **/build/outputs/bundle/release/*.aab
+            
