@@ -22,4 +22,4 @@ jobs:
         with:
           name: Giga-Wall-APK
           path: "**/*.apk"
-                "**/*.aab
+                "**/*.aab"
